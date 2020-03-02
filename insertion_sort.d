@@ -19,7 +19,7 @@ void insertionSort2(int[] v)
     foreach (i, e; v[1..$])
     {
         int chave = e;
-        auto j = i; // size_t ao invés de int
+        int j = cast(int) i;
         while (j >= 0 && v[j] > chave)
         {
             v[j + 1] = v[j];
