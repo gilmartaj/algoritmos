@@ -12,3 +12,19 @@ void insertionSort(int[] v)
 		v[j+1] = chave;
 	}
 }
+
+// usa foreach ao invés de for no laço externo
+void insertionSort2(int[] v)
+{
+    foreach (i, e; v[1..$])
+    {
+        int chave = e;
+        int j = cast(int) i;
+        while (j >= 0 && v[j] > chave)
+        {
+            v[j + 1] = v[j];
+            --j;
+        }
+        v[j + 1] = chave;
+    }
+}
