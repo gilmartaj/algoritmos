@@ -1,6 +1,6 @@
 void insertionSortReverse(int[] v)
 {
-    for(int i = cast(int)(v.length - 2); i >= 0; --i)
+    for(int i = cast(int) (v.length - 2); i >= 0; --i)
     {
         int chave = v[i];
         int j = i + 1;
