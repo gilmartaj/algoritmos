@@ -12,7 +12,7 @@ unsigned int comprimento, tamanho_tipo; \
 #define inicializar_vetor(vetor) \
 vetor.comprimento = 0; \
 vetor.tamanho_tipo = sizeof(*vetor.ponteiro_vetor); \
-vetor.ponteiro_vetor = malloc(0) \
+vetor.ponteiro_vetor = malloc(0)
 
 #define inserir_elemento(vetor, elemento) \
 vetor.ponteiro_vetor = realloc(vetor.ponteiro_vetor, vetor.tamanho_tipo * ++vetor.comprimento); \
