@@ -353,7 +353,10 @@ class MultipleDateInterval(object):
             auxiliar_date = date(self.end_date.year, self.end_date.month, self.end_date.day) + timedelta(days = 1)
             complement_intervals.append(SimpleDateInterval(Date.fromPythonDate(auxiliar_date), Date.POSITIVE_INFINITY()))
         return MultipleDateInterval(complement_intervals) if len(complement_intervals) > 0 else SimpleDateInterval(None, None)
-            
+          
+    def copy(self):
+        return MultipleDateInterval(self.simpleIntervals)
+          
     def intersection(self, other_date_interval):
         intersections = []        
         if type(other_date_interval) == MultipleDateInterval:
@@ -445,7 +448,7 @@ class IntervalCalculator:
                     postfix_list.append(top)
                     top = queue.pop()
             else:
-                while len(queue) > 0 and operator_precedency[queue[-1]] >= operator_precedency[e]:
+                while len(queue) > 0 and operator_precedency[queue[-1]] >= operator_precedency[e] and not (queue[-1] == '&' and e == '!'):
                     postfix_list.append(queue.pop())
                 queue.append(e)
         
@@ -625,30 +628,5 @@ class TestMethods(unittest.TestCase):
         
         self.assertEqual(IntervalCalculator.calculateExpression("[31/12/2020, 7/6/2022]&[24/10/2014, 11/11/2021]|([12/3/2099, 13/2/2101]|[1/1/1988, 10/11/1995])|([31/05/1990,+infinito])"), SimpleDateInterval(Date(1,1,1988),Date.POSITIVE_INFINITY()))
         
-        #self.assertEqual(SimpleDateInterval(Date(10,10,2010), Date.POSITIVE_INFINITY())|MultipleDateInterval([]), None)
-        #self.assertEqual(IntervalCalculator.calculateExpression("([-infinito, 12/01/2000]|!(30/05/2022, 1/1/2023)&[1/1/2023, 28/10/2300]|[,]-([12/3/2012, 4/9/2022]))|(8/8/3000, 11/8/3000)"), SimpleDateInterval(Date(31,12,2020), Date(11,11,2021)))
-       #self.assertEqual(IntervalCalculator.calculateExpression("![1, 10]"), IntervalCalculator.calculateExpression("(, 1) | (10,) "))
-
-#print(IntervalCalculator.calculateExpression("[12/7, 30/7]&[14,30]|[14/8,20/8]|(28/1/2021,)"))
-#print(IntervalCalculator.calculateExpression("!([1, 10]|[15,20])"))
-#print(IntervalCalculator.calculateExpression("![1, 10]"))
-#print(IntervalCalculator.calculateExpression("[11/09/2021, +infinito] | [15,20]"))
-#print(IntervalCalculator.calculateExpression("![1, 10]|[15,20]"))
-#print(IntervalCalculator.calculateExpression("[1,10]-[5,9]"))
-
-#si1 = SimpleDateInterval(Date(1,5,2012), Date(2,6,2017))
-#si2 = SimpleDateInterval(Date(31,12,2020), Date(7,6,2022))
-#si3 = SimpleDateInterval(Date(24,10,2014), Date(11,11,2021))
-#si4 = SimpleDateInterval(Date(1,5,2012), Date(10,8,2017))
-
-#print(IntervalCalculator.calculateExpression("![1, 10]"))
-print("[1/5/2012,2/6/2017]|[1/5/2018,10/8/2018]")
-print(IntervalCalculator.calculateExpression("!((1/5/2012,2/6/2017)|(1/5/2018,10/8/2018))"))
-print(len(SimpleDateInterval(Date(2),Date(10))))
-print(len(MultipleDateInterval([SimpleDateInterval(Date(31,3,2012), Date(30,4,2012)), SimpleDateInterval(Date(21,6,2020), Date(25,6,2020))])))
-print(SimpleDateInterval(Date(10,10,2010), Date.POSITIVE_INFINITY())|MultipleDateInterval([]))
-print("\n\n")
-print(IntervalCalculator.calculateExpression("[31/12/2020, 7/6/2022]&[24/10/2014, 11/11/2021]|([12/3/2099, 13/2/2101]|[1/1/1988, 10/11/1995])|([31/05/1990,+infinito])&(11/12/2009,20/10/2012)|!(,26/12/3001)-[11/11/4000,19/12/4001]"))
-#print(SimpleDateInterval(Date(12,3,1988),Date(13,2,2101))|SimpleDateInterval(Date(31,5,1990),Date.POSITIVE_INFINITY()))
-#print(SimpleDateInterval(Date(1,1,1988),Date.POSITIVE_INFINITY())|SimpleDateInterval(Date(12,3,2099),Date(13,2,2101)))
-
+        self.assertEqual(IntervalCalculator.calculateExpression("[1/10/2002, 10/12/2017]|[5/6/1987, 18/11/1996]|[1/10/2056, 10/12/2088]&[15/3/2077, 10/12/2082]&!([10/10/2033, +infinito]|[, 10/10/2020])-[12/07/2022, 19/10/2026]"),
+                    MultipleDateInterval([SimpleDateInterval(Date(5,6,1987), Date(18,11,1996)), SimpleDateInterval(Date(1,10,2002), Date(10,12,2017))]))
